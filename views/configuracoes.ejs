@@ -1,0 +1,140 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpeg" href="/logo.jpg"/>
+<title>Configurações – VisionGuard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css"/>
+<style>
+.cfg-wrap { padding: 0 28px 40px; }
+.cfg-card { background: #131720; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 24px; margin-bottom: 20px; }
+.cfg-card h3 { font-family: Rajdhani,sans-serif; font-size: 16px; font-weight: 700; color: #8b909e; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+.cfg-group { margin-bottom: 18px; }
+.cfg-group label { display: block; margin-bottom: 6px; color: #8b909e; font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+.cfg-group input, .cfg-group textarea, .cfg-group select { width: 100%; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.06); border-radius: 8px; background: #0f1219; color: #eef0f5; font-family: Inter,sans-serif; font-size: 13px; outline: none; box-sizing: border-box; }
+.cfg-group textarea { resize: vertical; min-height: 70px; }
+.cfg-group input:focus, .cfg-group textarea:focus, .cfg-group select:focus { border-color: #4e7fff; }
+.cfg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.btn-salvar { background: #4e7fff; border: none; color: #fff; border-radius: 8px; padding: 10px 24px; cursor: pointer; font-family: Inter,sans-serif; font-size: 13px; font-weight: 600; }
+.btn-salvar:hover { opacity: .88; }
+.btn-acao { background: rgba(78,127,255,0.1); border: 1px solid rgba(78,127,255,0.25); color: #4e7fff; border-radius: 8px; padding: 9px 18px; cursor: pointer; font-family: Inter,sans-serif; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+.btn-perigo { background: rgba(224,92,92,0.1); border: 1px solid rgba(224,92,92,0.25); color: #e05c5c; }
+.btn-acao:hover { opacity: .8; }
+.sucesso-msg { background: rgba(60,184,168,0.1); border: 1px solid rgba(60,184,168,0.3); color: #3cb8a8; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 16px; }
+.grupo-tag { display: inline-flex; align-items: center; gap: 6px; background: #0f1219; border: 1px solid rgba(255,255,255,0.06); border-radius: 20px; padding: 4px 12px; font-size: 12px; color: #8b909e; margin: 4px; }
+.grupo-tag button { background: none; border: none; color: #454955; cursor: pointer; font-size: 14px; padding: 0; line-height: 1; }
+.grupo-tag button:hover { color: #e05c5c; }
+.grupos-wrap { margin-bottom: 10px; min-height: 36px; }
+.add-grupo { display: flex; gap: 8px; margin-top: 8px; }
+.add-grupo input { flex: 1; }
+.add-grupo button { background: rgba(78,127,255,0.15); border: 1px solid rgba(78,127,255,0.3); color: #4e7fff; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-size: 13px; font-family: Inter,sans-serif; white-space: nowrap; }
+.backup-info { font-size: 12px; color: #454955; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo-wrap">
+      <img src="/logo.jpg" alt="Grupo Koch" class="brand-logo">
+    </div>
+    <span class="brand-label">VisionGuard</span>
+  </div>
+  <nav class="menu">
+    <a href="/" class="menu-btn">⊘ &nbsp;Blacklist</a>
+    <a href="/relatorios" class="menu-btn">▤ &nbsp;Relatórios</a>
+    <% if (typeof usuario !== 'undefined' && usuario && usuario.nivel === 'admin') { %>
+      <a href="/admin/usuarios" class="menu-btn">👥 &nbsp;Usuários</a>
+    <% } %>
+    <a href="/configuracoes" class="menu-btn ativo">⚙ &nbsp;Configurações</a>
+  </nav>
+  <a href="/logout" class="logout">↪ &nbsp;Sair</a>
+</aside>
+
+<div class="main-content">
+  <div class="topo">
+    <div class="titulo">Configurações</div>
+  </div>
+
+  <div class="cfg-wrap">
+
+    <% if (typeof sucesso !== 'undefined' && sucesso) { %>
+      <div class="sucesso-msg">✓ Configurações salvas com sucesso!</div>
+    <% } %>
+
+    <form method="POST" action="/configuracoes">
+
+      <!-- Bot WhatsApp -->
+      <div class="cfg-card">
+        <h3> Bot WhatsApp</h3>
+
+        <div class="cfg-group">
+          <label>Grupos permitidos</label>
+          <div class="grupos-wrap" id="grupos-wrap">
+            <% config.grupos_permitidos.forEach(g => { %>
+              <span class="grupo-tag"><%= g %> <button type="button" onclick="removerGrupo(this)">×</button></span>
+            <% }) %>
+          </div>
+          <div class="add-grupo">
+            <input type="text" id="novo-grupo" placeholder="Nome exato do grupo no WhatsApp">
+            <button type="button" id="btn-add-grupo">+ Adicionar</button>
+          </div>
+          <input type="hidden" name="grupos_permitidos" id="grupos-json" value="<%= JSON.stringify(config.grupos_permitidos) %>">
+        </div>
+
+        <div class="cfg-group">
+          <label>Mensagem ao receber foto</label>
+          <textarea name="msg_recebimento"><%= config.msg_recebimento %></textarea>
+        </div>
+
+        <div class="cfg-group">
+          <label>Mensagem ao aprovar</label>
+          <textarea name="msg_aprovacao"><%= config.msg_aprovacao %></textarea>
+        </div>
+
+        <div class="cfg-group">
+          <label>Mensagem ao recusar</label>
+          <textarea name="msg_recusa"><%= config.msg_recusa %></textarea>
+        </div>
+      </div>
+
+      <!-- Notificações -->
+      <div class="cfg-card">
+        <h3> Notificações</h3>
+        <div class="cfg-grid">
+          <div class="cfg-group">
+            <label>Email de alertas</label>
+            <input type="email" name="email_alertas" value="<%= config.email_alertas %>">
+          </div>
+          <div class="cfg-group">
+            <label>Alertar após quantos pendentes</label>
+            <select name="alertar_apos">
+              <option value="1" <%= config.alertar_apos == 1 ? 'selected' : '' %>>1 pendente</option>
+              <option value="5" <%= config.alertar_apos == 5 ? 'selected' : '' %>>5 pendentes</option>
+              <option value="10" <%= config.alertar_apos == 10 ? 'selected' : '' %>>10 pendentes</option>
+              <option value="20" <%= config.alertar_apos == 20 ? 'selected' : '' %>>20 pendentes</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-salvar">Salvar configurações</button>
+
+    </form>
+
+    <!-- Banco de dados -->
+    <div class="cfg-card" style="margin-top:20px">
+      <h3>🗄Banco de dados</h3>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn-acao" id="btn-backup">⬇ Backup agora</button>
+        <button class="btn-acao btn-perigo" id="btn-limpar">🗑 Limpar registros antigos</button>
+      </div>
+      <p class="backup-info" id="backup-info">Clique em "Backup agora" para gerar uma cópia do banco.</p>
+    </div>
+
+  </div>
+</div>
+
+<script src="/configuracoes.js"></script>
+</body>
+</html>

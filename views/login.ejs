@@ -1,0 +1,192 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpeg" href="/logo.jpg"/>
+<title>VisionGuard – IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>.sucesso{background:rgba(60,184,168,0.1);border:1px solid rgba(60,184,168,0.3);color:#3cb8a8;border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:16px;text-align:center}
+.link-login{margin-top:20px;text-align:center;font-size:13px;color:#454955}
+.link-login a{color:#4e7fff;text-decoration:none}
+.link-login a:hover{text-decoration:underline}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Inter',Arial,sans-serif;
+  background:#080a0f;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#eef0f5;
+  position:relative;
+  overflow:hidden;
+}
+
+/* fundo animado */
+.bg-glow{
+  position:absolute;
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(78,127,255,0.18),transparent 70%);
+  border-radius:50%;
+  top:-150px;right:-150px;
+  filter:blur(60px);
+  pointer-events:none;
+}
+.bg-glow2{
+  position:absolute;
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(99,202,183,0.1),transparent 70%);
+  border-radius:50%;
+  bottom:-100px;left:-100px;
+  filter:blur(60px);
+  pointer-events:none;
+}
+
+/* card */
+.login-box{
+  position:relative;
+  z-index:10;
+  width:420px;
+  background:#0f1219;
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:20px;
+  padding:40px 36px;
+  box-shadow:0 24px 64px rgba(0,0,0,0.5);
+}
+
+/* logo */
+.brand{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:32px;
+  gap:14px;
+}
+.brand-logo-wrap{
+  width:80px;height:80px;
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(78,127,255,0.4);
+  box-shadow:0 0 20px rgba(78,127,255,0.25);
+}
+
+.brand-logo{width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block}
+.brand-name{
+  font-family:'Rajdhani',sans-serif;
+  font-size:28px;font-weight:700;
+  letter-spacing:0.05em;
+  background:linear-gradient(135deg,#e8ecf5,#8b9bbd);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.brand-sub{
+  font-size:13px;
+  color:#454955;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  margin-top:-8px;
+}
+
+/* form */
+.input-group{margin-bottom:18px}
+.input-group label{
+  display:block;
+  margin-bottom:7px;
+  color:#8b909e;
+  font-size:12.5px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+}
+.input-group input{
+  width:100%;
+  padding:11px 14px;
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:8px;
+  background:#131720;
+  color:#eef0f5;
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.input-group input::placeholder{color:#454955}
+.input-group input:focus{
+  border-color:#4e7fff;
+  box-shadow:0 0 0 3px rgba(78,127,255,0.12);
+}
+
+/* botão */
+.btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:8px;
+  background:#4e7fff;
+  color:#fff;
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:14px;
+  cursor:pointer;
+  transition:opacity .15s,transform .15s;
+  margin-top:8px;
+  letter-spacing:0.03em;
+}
+.btn:hover{opacity:.88;transform:translateY(-1px)}
+
+/* erro */
+.erro{
+  background:rgba(224,92,92,0.1);
+  border:1px solid rgba(224,92,92,0.3);
+  color:#e05c5c;
+  border-radius:8px;
+  padding:10px 14px;
+  font-size:13px;
+  margin-bottom:18px;
+  text-align:center;
+}
+
+/* footer */
+.footer{
+  margin-top:24px;
+  text-align:center;
+  color:#2a2d35;
+  font-size:12px;
+  letter-spacing:0.05em;
+}
+</style>
+</head>
+<body>
+<div class="bg-glow"></div>
+<div class="bg-glow2"></div>
+
+<div class="login-box">
+  <div class="brand">
+    <div class="brand-logo-wrap">
+      <img src="/logo.jpg" alt="Grupo Koch" class="brand-logo">
+    </div>
+    <div class="brand-name">VisionGuard</div>
+    <div class="brand-sub">Sistema de Gerenciamento Facial</div>
+  </div>
+
+  <% if (typeof erro !== 'undefined' && erro) { %>
+  <div class="erro"><%= erro %></div>
+<% } %>
+<% if (typeof sucesso !== 'undefined' && sucesso) { %>
+  <div class="sucesso"><%= sucesso %></div>
+<% } %>
+
+  <form method="POST" action="/login">
+    <div class="input-group">
+      <label>Usuário</label>
+      <input type="text" name="usuario" placeholder="Digite seu usuário" required>
+    </div>
+    <div class="input-group">
+      <label>Senha</label>
+      <input type="password" name="senha" placeholder="Digite sua senha" required>
+    </div>
+    <button class="btn" type="submit">Entrar</button>
+  </form>
+
+<div class="link-login">Não tem conta? <a href="/cadastro">Cadastrar</a></div>  
+<div class="footer"> V1.2</div>
+</div>
+</body>
+</html>

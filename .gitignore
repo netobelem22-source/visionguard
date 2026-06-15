@@ -1,0 +1,33 @@
+.env
+config.json
+.wwebjs_auth/
+.wwebjs_cache/
+node_modules/
+venv/
+__pycache__/
+*.db
+*.db.backup
+*.json
+blacklist.json
+*.pt
+GFPGAN/
+logs/
+uploads/
+inputs/
+temp/
+resultado_ia/
+backups/
+*.bak
+*.save
+data/
+
+# Fotos de pessoas e imagens processadas (LGPD - NUNCA subir)
+public/*.png
+public/*.jpg
+public/*.jpeg
+melhorada_*
+Face*
+
+# Modelos de IA (pesados - vao por rsync)
+models/
+*.pt

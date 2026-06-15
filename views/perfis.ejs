@@ -1,0 +1,115 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpeg" href="/logo.jpg"/>
+<title>Perfis – VisionGuard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css"/>
+<style>
+.perfis-wrap { padding: 0 28px 40px; }
+.perfis-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
+.perfil-card { background:#131720; border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:10px; transition:border-color .15s; }
+.perfil-card:hover { border-color:rgba(78,127,255,0.3); }
+.perfil-card a { text-decoration:none; }
+.perfil-avatar { width:60px; height:60px; border-radius:10px; object-fit:cover; border:1px solid rgba(255,255,255,0.08); }
+.perfil-avatar-placeholder { width:60px; height:60px; border-radius:10px; background:#0f1219; border:1px solid rgba(255,255,255,0.06); display:flex; align-items:center; justify-content:center; font-size:24px; color:#454955; }
+.perfil-nome { font-family:Rajdhani,sans-serif; font-size:16px; font-weight:700; color:#eef0f5; margin-bottom:2px; }
+.perfil-grupo { display:inline-block; padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; }
+.grupo-quadrilha { background:rgba(224,92,92,0.15); color:#e05c5c; }
+.grupo-furto { background:rgba(224,138,60,0.15); color:#e08a3c; }
+.grupo-assedio { background:rgba(155,114,207,0.15); color:#9b72cf; }
+.grupo-reincidente { background:rgba(78,127,255,0.15); color:#4e7fff; }
+.grupo-suspeito { background:rgba(139,144,158,0.15); color:#8b909e; }
+.perfil-stats { display:flex; gap:12px; margin-top:4px; }
+.perfil-stat { font-size:11px; color:#454955; }
+.perfil-stat strong { color:#8b909e; }
+.btn-ver { display:block; text-align:center; background:rgba(78,127,255,0.1); border:1px solid rgba(78,127,255,0.2); color:#4e7fff; border-radius:8px; padding:7px; font-size:12px; font-weight:600; font-family:Inter,sans-serif; margin-top:4px; }
+.btn-ver:hover { background:rgba(78,127,255,0.2); }
+.empty { text-align:center; padding:60px 0; color:#454955; font-size:14px; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo-wrap">
+      <img src="/logo.jpg" alt="Grupo Koch" class="brand-logo">
+    </div>
+    <span class="brand-label">VisionGuard</span>
+  </div>
+  <nav class="menu">
+    <a href="/" class="menu-btn">⊘ &nbsp;Blacklist</a>
+    <a href="/relatorios" class="menu-btn">▤ &nbsp;Relatórios</a>
+    <a href="/perfis" class="menu-btn ativo">👤 &nbsp;Perfis</a>
+    <% if (typeof usuario !== 'undefined' && usuario && usuario.nivel === 'admin') { %>
+      <a href="/admin/usuarios" class="menu-btn"> &nbsp;Usuários</a>
+    <% } %>
+    <a href="/configuracoes" class="menu-btn">⚙ &nbsp;Configurações</a>
+  </nav>
+  <a href="/logout" class="logout">↪ &nbsp;Sair</a>
+</aside>
+
+<div class="main-content">
+  <div class="topo">
+    <div class="titulo">Perfis Cadastrados</div>
+    <div class="stats-row">
+      <div class="stat-chip">
+        <div class="val"><%= perfis.length %></div>
+        <div class="lbl">Total de perfis</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="perfis-wrap">
+
+    <form method="GET" action="/perfis" style="display:flex;gap:10px;margin-bottom:8px">
+      <input type="text" name="busca" placeholder="Buscar por nome..." value="<%= busca %>" autocomplete="off"
+        style="flex:1;padding:10px 14px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;background:#131720;color:#eef0f5;font-family:Inter,sans-serif;font-size:13px;outline:none">
+      <button type="submit" style="background:#4e7fff;border:none;color:#fff;border-radius:8px;padding:10px 20px;cursor:pointer;font-family:Inter,sans-serif;font-size:13px;font-weight:600">Buscar</button>
+      <% if (busca) { %>
+        <a href="/perfis" style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);color:#8b909e;border-radius:8px;padding:10px 16px;font-size:13px;text-decoration:none;display:flex;align-items:center">Limpar</a>
+      <% } %>
+    </form>
+
+    <% if (perfis.length === 0) { %>
+      <div class="empty">
+        <p style="font-size:32px;margin-bottom:10px">👤</p>
+        <p><%= busca ? 'Nenhum perfil encontrado para "' + busca + '"' : 'Nenhum perfil cadastrado ainda.' %></p>
+      </div>
+    <% } else { %>
+      <div class="perfis-grid">
+      <% perfis.forEach(p => { %>
+        <div class="perfil-card">
+          <div style="display:flex;gap:12px;align-items:center">
+            <% if (p.foto_recente) { %>
+  <img src="<%= p.foto_recente %>" alt="" class="perfil-avatar">
+<% } else { %>
+  <div class="perfil-avatar-placeholder">👤</div>
+<% } %>
+            <div>
+              <div class="perfil-nome"><%= p.nome %></div>
+              <% if (p.grupo) { %>
+                <span class="perfil-grupo grupo-<%= p.grupo %>"><%= p.grupo %></span>
+              <% } %>
+              <% if (p.nome_grupo) { %>
+                <div style="font-size:11px;color:#454955;margin-top:2px"><%= p.nome_grupo %></div>
+              <% } %>
+            </div>
+          </div>
+          <div class="perfil-stats">
+            <div class="perfil-stat"><strong><%= p.total_ocorrencias %></strong> ocorrências</div>
+            <div class="perfil-stat"><strong><%= new Date(p.criado_em).toLocaleDateString('pt-BR') %></strong></div>
+          </div>
+          <% if (p.observacao) { %>
+            <p style="font-size:11px;color:#454955;margin:0"><%= p.observacao %></p>
+          <% } %>
+          <a href="/pessoas/<%= p.id %>" class="btn-ver">Ver perfil completo</a>
+        </div>
+      <% }) %>
+      </div>
+    <% } %>
+
+  </div>
+</div>
+</body>
+</html>

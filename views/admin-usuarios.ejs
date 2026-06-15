@@ -1,0 +1,121 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpeg" href="/logo.jpg"/>
+<title>Usuários – VisionGuard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css"/>
+<style>
+.tabela-wrap { padding: 0 28px 40px; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: #131720; }
+th { padding: 12px 16px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: #454955; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.06); }
+td { padding: 14px 16px; font-size: 13px; color: #8b909e; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+tr:hover td { background: #131720; }
+.badge { display:inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge-admin { background: rgba(78,127,255,0.15); color: #4e7fff; }
+.badge-normal { background: rgba(139,144,158,0.15); color: #8b909e; }
+.badge-ativo { background: rgba(60,184,168,0.15); color: #3cb8a8; }
+.badge-inativo { background: rgba(224,92,92,0.15); color: #e05c5c; }
+.acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn-sm { padding: 5px 10px; border: none; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: Inter, sans-serif; }
+.btn-aprovar { background: rgba(60,184,168,0.15); color: #3cb8a8; border: 1px solid rgba(60,184,168,0.3); }
+.btn-bloquear { background: rgba(224,92,92,0.15); color: #e05c5c; border: 1px solid rgba(224,92,92,0.3); }
+.btn-admin { background: rgba(78,127,255,0.15); color: #4e7fff; border: 1px solid rgba(78,127,255,0.3); }
+.btn-normal { background: rgba(139,144,158,0.15); color: #8b909e; border: 1px solid rgba(139,144,158,0.2); }
+.btn-excluir { background: rgba(224,92,92,0.1); color: #e05c5c; border: 1px solid rgba(224,92,92,0.2); }
+.nome-cel { color: #eef0f5; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo-wrap">
+      <img src="/logo.jpg" alt="Grupo Koch" class="brand-logo">
+    </div>
+    <span class="brand-label">VisionGuard</span>
+  </div>
+  <nav class="menu">
+    <a href="/" class="menu-btn">⊘ &nbsp;Blacklist</a>
+    <a href="/relatorios" class="menu-btn">▤ &nbsp;Relatórios</a>
+    <a href="/admin/usuarios" class="menu-btn ativo">👥 &nbsp;Usuários</a>
+    <a href="/configuracoes" class="menu-btn">⚙ &nbsp;Configurações</a>
+  </nav>
+  <a href="/logout" class="logout">↪ &nbsp;Sair</a>
+</aside>
+
+<div class="main-content">
+
+  <div class="topo">
+    <div class="titulo">Gerenciar Usuários</div>
+    <div class="stats-row">
+      <div class="stat-chip">
+        <div class="val"><%= usuarios.length %></div>
+        <div class="lbl">Total de usuários</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabela-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Email</th>
+          <th>Nível</th>
+          <th>Status</th>
+          <th>Cadastrado em</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% usuarios.forEach(u => { %>
+        <tr>
+          <td class="nome-cel"><%= u.nome %></td>
+          <td><%= u.email %></td>
+          <td>
+            <span class="badge <%= u.nivel === 'admin' ? 'badge-admin' : 'badge-normal' %>">
+              <%= u.nivel %>
+            </span>
+          </td>
+          <td>
+            <span class="badge <%= u.confirmado ? 'badge-ativo' : 'badge-inativo' %>">
+              <%= u.confirmado ? 'Ativo' : 'Pendente' %>
+            </span>
+          </td>
+          <td><%= new Date(u.criado_em).toLocaleDateString('pt-BR') %></td>
+          <td>
+            <div class="acoes">
+              <% if (!u.confirmado) { %>
+                <form method="POST" action="/admin/usuarios/<%= u.id %>/aprovar">
+                  <button class="btn-sm btn-aprovar">✓ Aprovar</button>
+                </form>
+              <% } else { %>
+                <form method="POST" action="/admin/usuarios/<%= u.id %>/bloquear">
+                  <button class="btn-sm btn-bloquear">✕ Bloquear</button>
+                </form>
+              <% } %>
+              <% if (u.nivel !== 'admin') { %>
+                <form method="POST" action="/admin/usuarios/<%= u.id %>/tornar-admin">
+                  <button class="btn-sm btn-admin">↑ Admin</button>
+                </form>
+              <% } else { %>
+                <form method="POST" action="/admin/usuarios/<%= u.id %>/tornar-normal">
+                  <button class="btn-sm btn-normal">↓ Normal</button>
+                </form>
+              <% } %>
+              <form method="POST" action="/admin/usuarios/<%= u.id %>/excluir" onsubmit="return confirm('Excluir este usuário?')">
+                <button class="btn-sm btn-excluir">🗑</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>

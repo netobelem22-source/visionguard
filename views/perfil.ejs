@@ -1,0 +1,270 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpeg" href="/logo.jpg"/>
+<title>Perfil – VisionGuard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css"/>
+<style>
+.perfil-wrap { padding: 0 28px 40px; }
+.perfil-header { background:#131720; border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:24px; margin-bottom:20px; }
+.perfil-header-top { display:flex; gap:20px; align-items:flex-start; margin-bottom:20px; }
+.perfil-foto-principal { width:100px; height:100px; border-radius:12px; object-fit:cover; border:1px solid rgba(255,255,255,0.08); flex-shrink:0; }
+.perfil-info h2 { font-family:Rajdhani,sans-serif; font-size:26px; font-weight:700; color:#eef0f5; margin-bottom:6px; }
+.perfil-info p { font-size:13px; color:#8b909e; margin-bottom:4px; }
+.badge-grupo { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; margin-bottom:8px; }
+.grupo-quadrilha { background:rgba(224,92,92,0.15); color:#e05c5c; }
+.grupo-furto { background:rgba(224,138,60,0.15); color:#e08a3c; }
+.grupo-assedio { background:rgba(155,114,207,0.15); color:#9b72cf; }
+.grupo-reincidente { background:rgba(78,127,255,0.15); color:#4e7fff; }
+.grupo-suspeito { background:rgba(139,144,158,0.15); color:#8b909e; }
+.stats-perfil { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.stat-perfil { background:#0f1219; border:1px solid rgba(255,255,255,0.04); border-radius:10px; padding:14px; text-align:center; }
+.stat-perfil .num { font-family:Rajdhani,sans-serif; font-size:24px; font-weight:700; color:#4e7fff; }
+.stat-perfil .lbl { font-size:11px; color:#454955; text-transform:uppercase; letter-spacing:.05em; margin-top:2px; }
+.perfil-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px; }
+.perfil-card { background:#131720; border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:20px; }
+.perfil-card h3 { font-family:Rajdhani,sans-serif; font-size:15px; font-weight:700; color:#8b909e; text-transform:uppercase; letter-spacing:.06em; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+.loja-item { display:flex; align-items:center; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+.loja-item:last-child { border-bottom:none; }
+.loja-nome { font-size:13px; color:#eef0f5; }
+.loja-count { font-size:12px; color:#4e7fff; font-weight:600; background:rgba(78,127,255,0.1); padding:2px 8px; border-radius:10px; }
+.loja-bar { height:4px; background:rgba(78,127,255,0.15); border-radius:2px; margin-top:4px; overflow:hidden; }
+.loja-bar-fill { height:100%; background:#4e7fff; border-radius:2px; }
+.timeline { display:flex; flex-direction:column; gap:0; }
+.timeline-item { display:flex; gap:14px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+.timeline-item:last-child { border-bottom:none; }
+.timeline-img { width:48px; height:48px; border-radius:8px; object-fit:cover; flex-shrink:0; }
+.timeline-info { flex:1; }
+.timeline-nome { font-size:13px; color:#eef0f5; font-weight:500; margin-bottom:2px; }
+.timeline-data { font-size:11px; color:#454955; }
+
+/* Boletins */
+.btn-novo-bo { background:rgba(78,127,255,0.1); border:1px solid rgba(78,127,255,0.25); color:#4e7fff; border-radius:6px; padding:4px 12px; cursor:pointer; font-family:Inter,sans-serif; font-size:11px; font-weight:600; }
+.bo-item { border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:14px; margin-bottom:10px; }
+.bo-item:last-child { margin-bottom:0; }
+.bo-header { display:flex; align-items:center; gap:8px; margin-bottom:6px; flex-wrap:wrap; }
+.bo-numero { font-size:13px; font-weight:600; color:#eef0f5; }
+.bo-badge { padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; }
+.bo-aberto { background:rgba(224,138,60,0.15); color:#e08a3c; }
+.bo-registrado { background:rgba(60,184,168,0.15); color:#3cb8a8; }
+.bo-encerrado { background:rgba(139,144,158,0.15); color:#8b909e; }
+.bo-tipo-furto { background:rgba(224,92,92,0.15); color:#e05c5c; }
+.bo-tipo-tentativa { background:rgba(224,138,60,0.15); color:#e08a3c; }
+.bo-tipo-assedio { background:rgba(155,114,207,0.15); color:#9b72cf; }
+.bo-tipo-outro { background:rgba(139,144,158,0.15); color:#8b909e; }
+.bo-info { font-size:12px; color:#8b909e; margin-bottom:4px; }
+.bo-desc { font-size:12px; color:#454955; }
+.bo-acoes { display:flex; gap:6px; margin-top:8px; }
+.btn-bo-sm { background:none; border:1px solid rgba(255,255,255,0.06); color:#8b909e; border-radius:6px; padding:3px 10px; cursor:pointer; font-family:Inter,sans-serif; font-size:11px; }
+.btn-bo-perigo { border-color:rgba(224,92,92,0.2); color:#e05c5c; }
+
+/* Modal boletim */
+.modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:999; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+.modal-bg.open { display:flex; }
+.modal-box { background:#0f1219; border:1px solid rgba(78,127,255,0.45); border-radius:16px; padding:28px; max-width:480px; width:90%; box-shadow:0 24px 64px rgba(0,0,0,0.6); max-height:90vh; overflow-y:auto; }
+.modal-box h3 { font-family:Rajdhani,sans-serif; font-size:20px; font-weight:700; color:#eef0f5; margin-bottom:20px; }
+.modal-group { margin-bottom:14px; }
+.modal-group label { display:block; margin-bottom:5px; color:#8b909e; font-size:12px; letter-spacing:.05em; text-transform:uppercase; }
+.modal-group input, .modal-group select, .modal-group textarea { width:100%; padding:9px 12px; border:1px solid rgba(255,255,255,0.06); border-radius:8px; background:#131720; color:#eef0f5; font-family:Inter,sans-serif; font-size:13px; outline:none; box-sizing:border-box; }
+.modal-group textarea { resize:vertical; min-height:70px; }
+.modal-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+.btn-cancel { background:none; border:1px solid rgba(255,255,255,0.06); color:#8b909e; border-radius:8px; padding:8px 18px; cursor:pointer; font-family:Inter,sans-serif; font-size:13px; }
+.btn-salvar { background:#4e7fff; border:none; color:#fff; border-radius:8px; padding:8px 18px; cursor:pointer; font-family:Inter,sans-serif; font-size:13px; font-weight:600; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo-wrap">
+      <img src="/logo.jpg" alt="Grupo Koch" class="brand-logo">
+    </div>
+    <span class="brand-label">VisionGuard</span>
+  </div>
+  <nav class="menu">
+    <a href="/" class="menu-btn">⊘ &nbsp;Blacklist</a>
+    <a href="/relatorios" class="menu-btn">▤ &nbsp;Relatórios</a>
+    <% if (typeof usuario !== 'undefined' && usuario && usuario.nivel === 'admin') { %>
+      <a href="/admin/usuarios" class="menu-btn">👥 &nbsp;Usuários</a>
+    <% } %>
+    <a href="/configuracoes" class="menu-btn">⚙ &nbsp;Configurações</a>
+  </nav>
+  <a href="/logout" class="logout">↪ &nbsp;Sair</a>
+</aside>
+
+<div class="main-content">
+  <div class="topo">
+    <div class="titulo">Perfil da Pessoa</div>
+  </div>
+
+  <div class="perfil-wrap">
+
+    <!-- Header -->
+    <div class="perfil-header">
+      <div class="perfil-header-top">
+        <% if (registros.length > 0) { %>
+          <img src="<%= registros[0].imagem %>" alt="" class="perfil-foto-principal">
+        <% } %>
+        <div class="perfil-info">
+          <h2><%= pessoa.nome %></h2>
+          <% if (pessoa.grupo) { %>
+            <span class="badge-grupo grupo-<%= pessoa.grupo %>"><%= pessoa.grupo.toUpperCase() %></span>
+          <% } %>
+          <% if (pessoa.nome_grupo) { %>
+            <p>Grupo: <strong style="color:#eef0f5"><%= pessoa.nome_grupo %></strong></p>
+          <% } %>
+          <% if (pessoa.observacao) { %>
+            <p><%= pessoa.observacao %></p>
+          <% } %>
+          <p style="color:#454955;font-size:11px;margin-top:6px">Cadastrado em: <%= new Date(pessoa.criado_em).toLocaleDateString('pt-BR') %></p>
+        </div>
+      </div>
+
+      <div class="stats-perfil">
+        <div class="stat-perfil">
+          <div class="num"><%= totalOcorrencias %></div>
+          <div class="lbl">Ocorrências</div>
+        </div>
+        <div class="stat-perfil">
+          <div class="num"><%= lojas.length %></div>
+          <div class="lbl">Lojas</div>
+        </div>
+        <div class="stat-perfil">
+          <div class="num" style="font-size:14px"><%= primeiraOcorrencia ? new Date(primeiraOcorrencia.data).toLocaleDateString('pt-BR') : '-' %></div>
+          <div class="lbl">Primeira vez</div>
+        </div>
+        <div class="stat-perfil">
+          <div class="num" style="font-size:14px"><%= ultimaOcorrencia ? new Date(ultimaOcorrencia.data).toLocaleDateString('pt-BR') : '-' %></div>
+          <div class="lbl">Última vez</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="perfil-grid">
+      <!-- Lojas -->
+      <div class="perfil-card">
+        <h3>Lojas visitadas</h3>
+        <% if (lojas.length > 0) { %>
+          <% const maxLoja = lojas[0].total; %>
+          <% lojas.forEach(l => { %>
+            <div class="loja-item">
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <span class="loja-nome"><%= l.nome %></span>
+                  <span class="loja-count"><%= l.total %>x</span>
+                </div>
+                <div class="loja-bar">
+                  <div class="loja-bar-fill" style="width:<%= Math.round((l.total/maxLoja)*100) %>%"></div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p style="color:#454955;font-size:13px">Nenhuma ocorrência registrada.</p>
+        <% } %>
+      </div>
+
+      <!-- Resumo -->
+      <div class="perfil-card">
+        <h3>Resumo</h3>
+        <% if (lojaMaisFrequente) { %>
+          <div style="margin-bottom:16px">
+            <p style="font-size:12px;color:#454955;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Loja mais frequente</p>
+            <p style="font-size:20px;font-family:Rajdhani,sans-serif;font-weight:700;color:#eef0f5"><%= lojaMaisFrequente.nome %></p>
+            <p style="font-size:12px;color:#4e7fff"><%= lojaMaisFrequente.total %> ocorrência<%= lojaMaisFrequente.total > 1 ? 's' : '' %></p>
+          </div>
+        <% } %>
+        <% if (primeiraOcorrencia) { %>
+          <div style="margin-bottom:12px">
+            <p style="font-size:12px;color:#454955;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">Primeira ocorrência</p>
+            <p style="font-size:13px;color:#eef0f5"><%= primeiraOcorrencia.nome %></p>
+            <p style="font-size:12px;color:#8b909e"><%= new Date(primeiraOcorrencia.data).toLocaleString('pt-BR') %></p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Boletins -->
+    <div class="perfil-card" style="margin-bottom:20px">
+      <h3>
+        Boletins de ocorrência
+        <button class="btn-novo-bo" id="btn-novo-bo">+ Novo boletim</button>
+      </h3>
+      <div id="lista-boletins">
+        <p style="color:#454955;font-size:13px">Carregando boletins...</p>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="perfil-card">
+      <h3>Histórico de ocorrências (<%= totalOcorrencias %>)</h3>
+      <div class="timeline">
+      <% registros.forEach(r => { %>
+        <div class="timeline-item">
+          <img src="<%= r.imagem %>" alt="" class="timeline-img">
+          <div class="timeline-info">
+            <div class="timeline-nome"><%= r.nome %></div>
+            <div class="timeline-data"><%= new Date(r.data).toLocaleString('pt-BR') %></div>
+            <% if (r.observacao) { %>
+              <div style="font-size:11px;color:#8b909e;margin-top:2px"><%= r.observacao %></div>
+            <% } %>
+          </div>
+          <a href="/download?arquivo=<%= r.imagem %>" download style="color:#454955;font-size:12px;text-decoration:none;align-self:center">⬇</a>
+        </div>
+      <% }) %>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal Novo Boletim -->
+<div id="modal-bo" class="modal-bg">
+  <div class="modal-box">
+    <h3>Novo Boletim de Ocorrência</h3>
+    <div class="modal-grid">
+      <div class="modal-group">
+        <label>Número do BO</label>
+        <input type="text" id="bo-numero" placeholder="Ex: 2026/04521">
+      </div>
+      <div class="modal-group">
+        <label>Tipo</label>
+        <select id="bo-tipo">
+          <option value="furto">Furto</option>
+          <option value="tentativa">Tentativa de furto</option>
+          <option value="assedio">Assédio</option>
+          <option value="vandalismo">Vandalismo</option>
+          <option value="outro">Outro</option>
+        </select>
+      </div>
+      <div class="modal-group">
+        <label>Loja</label>
+        <input type="text" id="bo-loja" placeholder="Ex: Loja 28">
+      </div>
+      <div class="modal-group">
+        <label>Valor do prejuízo</label>
+        <input type="text" id="bo-prejuizo" placeholder="R$ 0,00">
+      </div>
+    </div>
+    <div class="modal-group">
+      <label>Data da ocorrência</label>
+      <input type="datetime-local" id="bo-data">
+    </div>
+    <div class="modal-group">
+      <label>Descrição</label>
+      <textarea id="bo-descricao" placeholder="Descreva o que aconteceu..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-fechar-bo">Cancelar</button>
+      <button class="btn-salvar" id="btn-salvar-bo">Salvar boletim</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="pessoa-data" data-id="<%= pessoa.id %>" style="display:none"></div>
+<script src="/boletins.js"></script>
+</body>
+</html>

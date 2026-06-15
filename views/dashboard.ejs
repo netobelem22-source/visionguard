@@ -1,0 +1,279 @@
+<html>
+<head>
+<meta http-equiv="refresh" content="300"/>
+<title>VisionGuard AI</title>
+<link rel="stylesheet" href="/style.css"/>
+<link rel="icon" type="image/jpeg" href="/logo.jpg"/>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Abas */
+.abas { padding: 0 28px 0; display:flex; gap:4px; margin-bottom:0; border-bottom:1px solid rgba(255,255,255,0.06); }
+.aba-btn { padding:12px 20px; font-size:13px; font-weight:600; cursor:pointer; border:none; background:none; color:#454955; font-family:Inter,sans-serif; border-bottom:2px solid transparent; transition:all .15s; text-decoration:none; display:flex; align-items:center; gap:8px; }
+.aba-btn:hover { color:#8b909e; }
+.aba-btn.ativo { color:#eef0f5; border-bottom:2px solid #4e7fff; }
+.aba-pendente.ativo { color:#e08a3c; border-bottom-color:#e08a3c; }
+.aba-recusado.ativo { color:#e05c5c; border-bottom-color:#e05c5c; }
+.aba-badge { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; font-size:10px; font-weight:700; }
+.badge-pendente { background:rgba(224,138,60,0.2); color:#e08a3c; }
+.badge-aprovado { background:rgba(60,184,168,0.2); color:#3cb8a8; }
+.badge-recusado { background:rgba(224,92,92,0.2); color:#e05c5c; }
+
+/* Filtros */
+.filtros { padding: 12px 28px; display:flex; gap:8px; flex-wrap:wrap; }
+.filtro-btn { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid rgba(255,255,255,0.06); background:#131720; color:#8b909e; text-decoration:none; transition:all .15s; }
+.filtro-btn:hover, .filtro-btn.ativo { background:var(--accent-dim); color:var(--accent); border-color:var(--border-active); }
+.filtro-quadrilha.ativo { background:rgba(224,92,92,0.15); color:#e05c5c; border-color:rgba(224,92,92,0.3); }
+.filtro-reincidente.ativo { background:rgba(78,127,255,0.15); color:#4e7fff; border-color:rgba(78,127,255,0.3); }
+
+/* Badge grupo no card */
+.card-grupo { display:inline-block; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:600; margin-bottom:6px; }
+.grupo-quadrilha { background:rgba(224,92,92,0.15); color:#e05c5c; }
+.grupo-furto { background:rgba(224,138,60,0.15); color:#e08a3c; }
+.grupo-assedio { background:rgba(155,114,207,0.15); color:#9b72cf; }
+.grupo-reincidente { background:rgba(78,127,255,0.15); color:#4e7fff; }
+.grupo-suspeito { background:rgba(139,144,158,0.15); color:#8b909e; }
+
+/* Botões ação */
+.btn-categorizar { flex:1; background:rgba(99,202,183,0.1); color:#3cb8a8; border:1px solid rgba(99,202,183,0.22); padding:6px 0; border-radius:6px; font-size:11.5px; font-weight:600; cursor:pointer; font-family:Inter,sans-serif; transition:opacity .15s; }
+.btn-categorizar:hover { opacity:.75; }
+.btn-aprovar { flex:1; background:rgba(60,184,168,0.1); color:#3cb8a8; border:1px solid rgba(60,184,168,0.22); padding:6px 0; border-radius:6px; font-size:11.5px; font-weight:600; cursor:pointer; font-family:Inter,sans-serif; transition:opacity .15s; }
+.btn-aprovar:hover { opacity:.75; }
+.btn-recusar { flex:1; background:rgba(224,92,92,0.1); color:#e05c5c; border:1px solid rgba(224,92,92,0.22); padding:6px 0; border-radius:6px; font-size:11.5px; font-weight:600; cursor:pointer; font-family:Inter,sans-serif; transition:opacity .15s; }
+.btn-recusar:hover { opacity:.75; }
+
+/* Modal */
+.modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:999; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+.modal-bg.open { display:flex; }
+.modal-box { background:#0f1219; border:1px solid rgba(78,127,255,0.45); border-radius:16px; padding:28px; max-width:420px; width:90%; box-shadow:0 24px 64px rgba(0,0,0,0.6); }
+.modal-box h3 { font-family:Rajdhani,sans-serif; font-size:20px; font-weight:700; color:#eef0f5; margin-bottom:20px; }
+.modal-group { margin-bottom:16px; }
+.modal-group label { display:block; margin-bottom:6px; color:#8b909e; font-size:12px; letter-spacing:.05em; text-transform:uppercase; }
+.modal-group select, .modal-group input, .modal-group textarea { width:100%; padding:9px 12px; border:1px solid rgba(255,255,255,0.06); border-radius:8px; background:#131720; color:#eef0f5; font-family:Inter,sans-serif; font-size:13px; outline:none; }
+.modal-group textarea { resize:vertical; min-height:70px; }
+.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+.btn-cancel { background:none; border:1px solid rgba(255,255,255,0.06); color:#8b909e; border-radius:8px; padding:8px 18px; cursor:pointer; font-family:Inter,sans-serif; font-size:13px; }
+.btn-salvar { background:#4e7fff; border:none; color:#fff; border-radius:8px; padding:8px 18px; cursor:pointer; font-family:Inter,sans-serif; font-size:13px; font-weight:600; }
+.btn-salvar-recusar { background:#e05c5c; border:none; color:#fff; border-radius:8px; padding:8px 18px; cursor:pointer; font-family:Inter,sans-serif; font-size:13px; font-weight:600; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo-wrap">
+      <img src="/logo.jpg" alt="Grupo Koch" class="brand-logo">
+    </div>
+    <span class="brand-label">VisionGuard</span>
+  </div>
+  <nav class="menu">
+    <a href="/" class="menu-btn ativo"> &nbsp;Blacklist</a>
+    <a href="/relatorios" class="menu-btn"> &nbsp;Relatórios</a>
+    <a href="/perfis" class="menu-btn"> &nbsp;Perfis</a>
+<% if (typeof usuario !== 'undefined' && usuario && usuario.nivel === 'admin') { %>
+      <a href="/admin/usuarios" class="menu-btn">&nbsp;Usuários</a>
+<a href="/admin/lojas" class="menu-btn">Lojas</a>
+    <% } %>
+    <a href="/configuracoes" class="menu-btn">&nbsp;Configurações</a>
+  </nav>
+  <a href="/logout" class="logout">↪ &nbsp;Sair</a>
+</aside>
+
+<div class="main-content">
+
+  <div class="topo">
+    <div class="titulo">Painel Administrativo</div>
+    <div class="stats-row">
+      <div class="stat-chip">
+        <div class="val"><%= blacklist.length %></div>
+        <div class="lbl">Total de registros</div>
+      </div>
+      <div class="stat-chip">
+        <div class="val"><%= filtrados.length %></div>
+        <div class="lbl">Resultados encontrados</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Abas -->
+  <div class="abas">
+    <a href="/?aba=aprovado" class="aba-btn <%= aba === 'aprovado' ? 'ativo' : '' %>">
+       Blacklist Geral
+    </a>
+    <a href="/?aba=pendente" class="aba-btn aba-pendente <%= aba === 'pendente' ? 'ativo' : '' %>">
+  Pendentes <span class="badge-pendentes" style="background:#e05c5c;color:#fff;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:4px;<%= typeof totalPendentes !== 'undefined' && totalPendentes > 0 ? '' : 'display:none' %>"><%= typeof totalPendentes !== 'undefined' ? totalPendentes : 0 %></span>
+    </a>
+    <a href="/?aba=recusado" class="aba-btn aba-recusado <%= aba === 'recusado' ? 'ativo' : '' %>">
+       Recusados
+    </a>
+  </div>
+
+  <form class="busca" method="GET" action="/">
+  <input type="hidden" name="aba" value="<%= aba %>">
+  <input type="text" name="busca" placeholder="Pesquisar por loja, tipo..." value="<%= busca %>" autocomplete="off">
+  <input type="date" name="dataInicio" value="<%= dataInicio %>" style="padding:8px 12px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;background:#131720;color:#eef0f5;font-family:Inter,sans-serif;font-size:13px;outline:none;">
+  <input type="date" name="dataFim" value="<%= dataFim %>" style="padding:8px 12px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;background:#131720;color:#eef0f5;font-family:Inter,sans-serif;font-size:13px;outline:none;">
+  <button type="submit">Buscar</button>
+</form>
+
+  <!-- Filtros por grupo (só na blacklist geral) -->
+  <% if (aba === 'aprovado') { %>
+  <div class="filtros">
+    <a href="/?aba=aprovado" class="filtro-btn <%= !grupo ? 'ativo' : '' %>">Todos</a>
+    <a href="/?aba=aprovado&grupo=quadrilha" class="filtro-btn filtro-quadrilha <%= grupo === 'quadrilha' ? 'ativo' : '' %>">🔴 Quadrilha</a>
+    <a href="/?aba=aprovado&grupo=reincidente" class="filtro-btn filtro-reincidente <%= grupo === 'reincidente' ? 'ativo' : '' %>">🔵 Reincidente</a>
+  </div>
+  <% } %>
+
+  <div class="grid">
+  <% paginaAtual.forEach((pessoa, idx) => { %>
+    <div class="card">
+      <img src="<%= pessoa.imagem %>" alt="" class="card-img-clicavel" data-src="<%= pessoa.imagem %>" style="cursor:zoom-in">
+      <div class="card-content">
+        <h2><%= pessoa.nome %></h2>
+        <div class="data"><%= new Date(pessoa.data).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}) %></div>
+        <% if (pessoa.grupo) { %>
+          <span class="card-grupo grupo-<%= pessoa.grupo %>"><%= pessoa.grupo %></span>
+        <% } %>
+        <% if (pessoa.observacao) { %>
+          <p style="font-size:11px;color:#454955;margin-bottom:6px"><%= pessoa.observacao %></p>
+        <% } %>
+        <% if (pessoa.pessoa_id) { %>
+          <a href="/pessoas/<%= pessoa.pessoa_id %>" style="display:block;font-size:11px;color:#4e7fff;margin-bottom:6px;text-decoration:none">👤 Ver perfil</a>
+        <% } %>
+        <div class="botoes">
+          <a class="download" href="/download?arquivo=<%= pessoa.imagem %>" download>⬇ Download</a>
+
+          <% if (aba === 'pendente') { %>
+            <button class="btn-aprovar" data-id="<%= pessoa.id %>" data-nome="<%= pessoa.nome %>">✓ Aprovar</button>
+            <button class="btn-recusar" data-id="<%= pessoa.id %>">✕ Recusar</button>
+          <% } else if (aba === 'aprovado') { %>
+            <button class="btn-categorizar" data-id="<%= pessoa.id %>">🏷 Categorizar</button>
+            <% if (typeof usuario !== 'undefined' && usuario && usuario.nivel === 'admin') { %>
+              <form method="POST" action="/excluir" style="flex:1" id="form-<%= idx %>">
+                <input type="hidden" name="imagem" value="<%= pessoa.imagem %>">
+                <button type="button" class="delete" style="width:100%">🗑 Excluir</button>
+              </form>
+            <% } %>
+          <% } else if (aba === 'recusado') { %>
+            <button class="btn-aprovar" data-id="<%= pessoa.id %>" data-nome="<%= pessoa.nome %>">↩ Reativar</button>
+            <% if (typeof usuario !== 'undefined' && usuario && usuario.nivel === 'admin') { %>
+              <form method="POST" action="/excluir" style="flex:1" id="form-<%= idx %>">
+                <input type="hidden" name="imagem" value="<%= pessoa.imagem %>">
+                <button type="button" class="delete" style="width:100%">🗑 Excluir</button>
+              </form>
+            <% } %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+  </div>
+
+  <div class="paginacao">
+    <% if (pagina > 1) { %>
+      <a class="pagina-btn" href="/?aba=<%= aba %>&pagina=<%= pagina-1 %>&busca=<%= busca %>">‹</a>
+    <% } %>
+    <% for(let i = 1; i <= totalPaginas; i++) { %>
+      <% if (i === 1 || i === totalPaginas || (i >= pagina - 2 && i <= pagina + 2)) { %>
+        <a class="pagina-btn <%= i === pagina ? 'ativa' : '' %>" href="/?aba=<%= aba %>&pagina=<%= i %>&busca=<%= busca %>"><%= i %></a>
+      <% } else if (i === pagina - 3 || i === pagina + 3) { %>
+        <span class="dots">...</span>
+      <% } %>
+    <% } %>
+    <% if (pagina < totalPaginas) { %>
+      <a class="pagina-btn" href="/?aba=<%= aba %>&pagina=<%= pagina+1 %>&busca=<%= busca %>">›</a>
+    <% } %>
+  </div>
+
+</div>
+
+<!-- Modal Categorizar -->
+<div id="modal-categorizar" class="modal-bg">
+  <div class="modal-box">
+    <h3>🏷 Categorizar Registro</h3>
+    <input type="hidden" id="cat-id">
+    <div class="modal-group">
+      <label>Categoria</label>
+      <select id="cat-grupo">
+        <option value="">Selecione...</option>
+        <option value="quadrilha">🔴 Quadrilha</option>
+        <option value="furto">🟠 Furto</option>
+        <option value="assedio">🟣 Assédio</option>
+        <option value="reincidente">🔵 Reincidente</option>
+        <option value="suspeito">⚫ Suspeito</option>
+      </select>
+    </div>
+    <div class="modal-group">
+      <label>Vincular a pessoa (opcional)</label>
+      <select id="cat-pessoa">
+        <option value="">Nenhuma — criar novo perfil</option>
+      </select>
+    </div>
+    <div class="modal-group" id="novo-nome-wrap">
+      <label>Nome da pessoa</label>
+      <input type="text" id="cat-nome" placeholder="Ex: João Silva">
+    </div>
+    <div class="modal-group" id="nome-grupo-wrap">
+      <label>Nome do grupo (se quadrilha)</label>
+      <input type="text" id="cat-nome-grupo" placeholder="Ex: Quadrilha do Norte">
+    </div>
+    <div class="modal-group">
+      <label>Observação</label>
+      <textarea id="cat-observacao" placeholder="Detalhes sobre a ocorrência..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-fechar-cat">Cancelar</button>
+      <button class="btn-salvar" id="btn-salvar-cat">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Recusar -->
+<div id="modal-recusar" class="modal-bg">
+  <div class="modal-box">
+    <h3>✕ Recusar Registro</h3>
+    <input type="hidden" id="rec-id">
+    <div class="modal-group">
+      <label>Motivo da recusa</label>
+      <select id="rec-motivo">
+        <option value="Imagem sem rosto visível">Imagem sem rosto visível</option>
+        <option value="Foto de baixa qualidade">Foto de baixa qualidade</option>
+        <option value="Pessoa não identificada">Pessoa não identificada</option>
+        <option value="Duplicado">Duplicado</option>
+        <option value="Outro">Outro</option>
+      </select>
+    </div>
+    <div class="modal-group">
+      <label>Observação (opcional)</label>
+      <textarea id="rec-obs" placeholder="Detalhes adicionais..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" id="btn-fechar-rec">Cancelar</button>
+      <button class="btn-salvar-recusar" id="btn-salvar-rec">Recusar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal excluir -->
+<div id="modal-excluir" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(4px)">
+  <div style="background:#0f1219;border:1px solid rgba(78,127,255,0.45);border-radius:16px;padding:28px;max-width:380px;width:90%;box-shadow:0 24px 64px rgba(0,0,0,0.6)">
+    <h3 style="font-family:Rajdhani,sans-serif;font-size:20px;font-weight:700;color:#e05c5c;margin:0 0 10px">Excluir registro?</h3>
+    <p style="font-size:13.5px;color:#8b909e;line-height:1.5">Esta ação não pode ser desfeita.</p>
+    <div style="margin-top:20px;display:flex;gap:10px;justify-content:flex-end">
+      <button id="btn-cancelar" style="background:none;border:1px solid rgba(255,255,255,0.06);color:#8b909e;border-radius:8px;padding:8px 18px;cursor:pointer;font-family:Inter,sans-serif;font-size:13px">Cancelar</button>
+      <button id="btn-confirmar" style="background:#e05c5c;border:none;color:#fff;border-radius:8px;padding:8px 18px;cursor:pointer;font-family:Inter,sans-serif;font-size:13px;font-weight:600">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<script src="/excluir.js"></script>
+<script src="/categorizar.js"></script>
+<script src="/aprovacao.js"></script>
+<script src="/badge-pendentes.js"></script>
+<!-- Modal foto ampliada -->
+<div id="modal-foto" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out">
+  <img id="modal-foto-img" src="" style="max-width:90vw;max-height:90vh;border-radius:12px;object-fit:contain">
+</div>
+<script src="/lightbox.js"></script>
+</body>
+</html>

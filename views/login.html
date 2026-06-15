@@ -1,0 +1,304 @@
+
+<html>
+
+<head>
+
+  <title>
+
+    Blacklist Grupo Koch
+
+  </title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <style>
+
+    * {
+
+      margin: 0;
+      padding: 0;
+
+      box-sizing: border-box;
+
+      font-family: Arial;
+
+    }
+
+    body {
+
+      background:
+        linear-gradient(
+          135deg,
+          #050816,
+          #0d1326
+        );
+
+      height: 100vh;
+
+      display: flex;
+
+      justify-content: center;
+      align-items: center;
+
+      overflow: hidden;
+
+      color: white;
+
+    }
+
+    .bg {
+
+      position: absolute;
+
+      width: 600px;
+      height: 600px;
+
+      background:
+        radial-gradient(
+          #00ff99,
+          transparent
+        );
+
+      filter: blur(120px);
+
+      opacity: 0.15;
+
+      border-radius: 50%;
+
+      top: -200px;
+      right: -200px;
+
+    }
+
+    .login-box {
+
+      position: relative;
+
+      width: 420px;
+
+      background:
+        rgba(20, 25, 40, 0.75);
+
+      backdrop-filter: blur(15px);
+
+      border:
+        1px solid rgba(255,255,255,0.08);
+
+      border-radius: 25px;
+
+      padding: 45px;
+
+      box-shadow:
+        0 0 40px rgba(0,0,0,0.4);
+
+      z-index: 10;
+
+    }
+
+    .logo {
+
+      font-size: 34px;
+
+      font-weight: bold;
+
+      margin-bottom: 10px;
+
+      text-align: center;
+
+    }
+
+    .sub {
+
+      text-align: center;
+
+      color: #9ca3af;
+
+      margin-bottom: 35px;
+
+      font-size: 15px;
+
+    }
+
+    .input-group {
+
+      margin-bottom: 20px;
+
+    }
+
+    .input-group label {
+
+      display: block;
+
+      margin-bottom: 8px;
+
+      color: #d1d5db;
+
+      font-size: 14px;
+
+    }
+
+    .input-group input {
+
+      width: 100%;
+
+      padding: 15px;
+
+      border: none;
+
+      border-radius: 12px;
+
+      background: #111827;
+
+      color: white;
+
+      font-size: 15px;
+
+      outline: none;
+
+      transition: 0.2s;
+
+    }
+
+    .input-group input:focus {
+
+      border:
+        1px solid #00ff99;
+
+      box-shadow:
+        0 0 10px rgba(0,255,153,0.3);
+
+    }
+
+    .btn {
+
+      width: 100%;
+
+      padding: 15px;
+
+      border: none;
+
+      border-radius: 12px;
+
+      background: #00ff99;
+
+      color: black;
+
+      font-weight: bold;
+
+      font-size: 16px;
+
+      cursor: pointer;
+
+      transition: 0.2s;
+
+      margin-top: 10px;
+
+    }
+
+    .btn:hover {
+
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 0 20px rgba(0,255,153,0.35);
+
+    }
+
+    .footer {
+
+      margin-top: 25px;
+
+      text-align: center;
+
+      color: #6b7280;
+
+      font-size: 13px;
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <div class="bg"></div>
+
+  <div class="login-box">
+
+    <div class="logo">
+
+      VisionGuard
+
+    </div>
+
+    <div class="sub">
+
+      Sistema de Gerencimento Facial
+
+    </div>
+
+    <form
+      method="POST"
+      action="/login"
+    >
+
+      <div class="input-group">
+
+        <label>
+
+          Usuário
+
+        </label>
+
+        <input
+          type="text"
+          name="usuario"
+          placeholder="Digite seu usuário"
+          required
+        >
+
+      </div>
+
+      <div class="input-group">
+
+        <label>
+
+          Senha
+
+        </label>
+
+        <input
+          type="password"
+          name="senha"
+          placeholder="Digite sua senha"
+          required
+        >
+
+      </div>
+
+      <button
+        class="btn"
+        type="submit"
+      >
+
+        Entrar
+
+      </button>
+
+    </form>
+
+    <div class="footer">
+
+      Grupo Koch • CFTV
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>

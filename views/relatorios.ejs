@@ -1,0 +1,243 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpeg" href="/logo.jpg"/>
+<title>Relatórios – VisionGuard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css"/>
+<style>
+.rel-wrap { padding: 0 28px 40px; }
+.rel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 28px; }
+.rel-card { background: #131720; border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 20px; }
+.rel-card h3 { font-family: Rajdhani,sans-serif; font-size: 16px; font-weight: 700; color: #8b909e; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 16px; }
+.stat-big { display: flex; gap: 16px; justify-content: space-around; }
+.stat-big-item { text-align: center; }
+.stat-big-item .num { font-family: Rajdhani,sans-serif; font-size: 36px; font-weight: 700; }
+.stat-big-item .lbl { font-size: 11px; color: #454955; text-transform: uppercase; letter-spacing: .05em; }
+.num-verde { color: #3cb8a8; }
+.num-laranja { color: #e08a3c; }
+.num-vermelho { color: #e05c5c; }
+.num-azul { color: #4e7fff; }
+.barra-wrap { display: flex; flex-direction: column; gap: 10px; }
+.barra-item { display: flex; flex-direction: column; gap: 4px; }
+.barra-label { display: flex; justify-content: space-between; font-size: 12px; color: #8b909e; }
+.barra-bg { height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.barra-fill { height: 100%; border-radius: 3px; }
+.fill-quadrilha { background: #e05c5c; }
+.fill-furto { background: #e08a3c; }
+.fill-assedio { background: #9b72cf; }
+.fill-reincidente { background: #4e7fff; }
+.fill-suspeito { background: #8b909e; }
+.fill-default { background: #4e7fff; }
+.tabela-lojas { width: 100%; border-collapse: collapse; }
+.tabela-lojas th { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #454955; padding: 8px 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.tabela-lojas td { padding: 10px 12px; font-size: 13px; color: #8b909e; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.tabela-lojas tr:hover td { background: rgba(255,255,255,0.02); }
+.rank { font-family: Rajdhani,sans-serif; font-size: 16px; font-weight: 700; color: #454955; }
+.rank-1 { color: #e08a3c; }
+.rank-2 { color: #8b909e; }
+.rank-3 { color: #9b72cf; }
+
+/* Gráfico de horas */
+.horas-grid { display: flex; align-items: flex-end; gap: 4px; height: 80px; }
+.hora-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.hora-barra { width: 100%; background: rgba(78,127,255,0.3); border-radius: 3px 3px 0 0; min-height: 2px; }
+.hora-barra.pico { background: #4e7fff; }
+.hora-label { font-size: 9px; color: #454955; }
+
+/* Gráfico de dias */
+.dias-grid { display: flex; align-items: flex-end; gap: 8px; height: 80px; }
+.dia-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.dia-barra { width: 100%; background: rgba(99,202,183,0.3); border-radius: 3px 3px 0 0; min-height: 2px; }
+.dia-barra.pico { background: #3cb8a8; }
+.dia-label { font-size: 10px; color: #454955; text-align: center; }
+
+/* Botão exportar */
+.btn-exportar { background:rgba(78,127,255,0.12); border:1px solid rgba(78,127,255,0.25); color:#4e7fff; border-radius:8px; padding:8px 16px; cursor:pointer; font-family:Inter,sans-serif; font-size:12px; font-weight:600; }
+.btn-exportar:hover { background:rgba(78,127,255,0.2); }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo-wrap">
+      <img src="/logo.jpg" alt="Grupo Koch" class="brand-logo">
+    </div>
+    <span class="brand-label">VisionGuard</span>
+  </div>
+  <nav class="menu">
+    <a href="/" class="menu-btn">Blacklist</a>
+    <a href="/relatorios" class="menu-btn ativo">Relatórios</a>
+    <a href="/perfis" class="menu-btn">Perfis</a>
+    <% if (typeof usuario !== 'undefined' && usuario && usuario.nivel === 'admin') { %>
+      <a href="/admin/usuarios" class="menu-btn">Usuários</a>
+      <a href="/admin/lojas" class="menu-btn">Lojas</a>
+    <% } %>
+    <a href="/configuracoes" class="menu-btn">Configurações</a>
+  </nav>
+  <a href="/logout" class="logout">↪ &nbsp;Sair</a>
+</aside>
+
+<div class="main-content">
+
+  <div class="topo">
+    <div class="titulo">Relatórios</div>
+    <button class="btn-exportar" id="btn-pdf">⬇ Exportar PDF</button>
+  </div>
+
+  <div class="rel-wrap">
+
+    <!-- Totais -->
+    <div class="rel-grid" style="grid-template-columns:1fr">
+      <div class="rel-card">
+        <h3>Visão Geral</h3>
+        <div class="stat-big">
+          <div class="stat-big-item">
+            <div class="num num-azul"><%= totais.total %></div>
+            <div class="lbl">Total</div>
+          </div>
+          <div class="stat-big-item">
+            <div class="num num-verde"><%= totais.aprovados %></div>
+            <div class="lbl">Aprovados</div>
+          </div>
+          <div class="stat-big-item">
+            <div class="num num-laranja"><%= totais.pendentes %></div>
+            <div class="lbl">Pendentes</div>
+          </div>
+          <div class="stat-big-item">
+            <div class="num num-vermelho"><%= totais.recusados %></div>
+            <div class="lbl">Recusados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rel-grid">
+      <!-- Por categoria -->
+      <div class="rel-card">
+        <h3>Por Categoria</h3>
+        <% if (porGrupo.length > 0) { %>
+          <% const maxGrupo = porGrupo[0].total; %>
+          <div class="barra-wrap">
+          <% porGrupo.forEach(g => { %>
+            <div class="barra-item">
+              <div class="barra-label">
+                <span><%= g.grupo || 'Sem categoria' %></span>
+                <span><%= g.total %></span>
+              </div>
+              <div class="barra-bg">
+                <div class="barra-fill fill-<%= g.grupo || 'default' %>" style="width:<%= Math.round((g.total/maxGrupo)*100) %>%"></div>
+              </div>
+            </div>
+          <% }) %>
+          </div>
+        <% } else { %>
+          <p style="color:#454955;font-size:13px">Nenhum registro categorizado ainda.</p>
+        <% } %>
+      </div>
+
+      <!-- Por mês -->
+      <div class="rel-card">
+        <h3>Últimos 6 Meses</h3>
+        <% if (porMes.length > 0) { %>
+          <% const maxMes = Math.max(...porMes.map(m => m.total)); %>
+          <div class="barra-wrap">
+          <% porMes.forEach(m => { %>
+            <div class="barra-item">
+              <div class="barra-label">
+                <span><%= m.mes %></span>
+                <span><%= m.total %></span>
+              </div>
+              <div class="barra-bg">
+                <div class="barra-fill fill-default" style="width:<%= Math.round((m.total/maxMes)*100) %>%"></div>
+              </div>
+            </div>
+          <% }) %>
+          </div>
+        <% } else { %>
+          <p style="color:#454955;font-size:13px">Sem dados suficientes.</p>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Horários de pico e Dias da semana lado a lado -->
+    <div class="rel-grid">
+
+      <!-- Horários de pico -->
+      <div class="rel-card">
+        <h3>Horários de Pico</h3>
+        <% if (porHora.length > 0) { %>
+          <% const maxHora = Math.max(...porHora.map(h => h.total)); %>
+          <% const horasMap = {}; porHora.forEach(h => horasMap[parseInt(h.hora)] = h.total); %>
+          <div class="horas-grid">
+          <% for(let h = 0; h < 24; h++) { %>
+            <% const val = horasMap[h] || 0; %>
+            <% const altura = val > 0 ? Math.max(8, Math.round((val/maxHora)*76)) : 2; %>
+            <div class="hora-col">
+              <div class="hora-barra <%= val === maxHora && val > 0 ? 'pico' : '' %>" style="height:<%= altura %>px"></div>
+              <span class="hora-label"><%= h %>h</span>
+            </div>
+          <% } %>
+          </div>
+        <% } else { %>
+          <p style="color:#454955;font-size:13px">Sem dados suficientes.</p>
+        <% } %>
+      </div>
+
+      <!-- Dias da semana -->
+      <div class="rel-card">
+        <h3>Dias da Semana</h3>
+        <% 
+          const nomesDias = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+          if (typeof porDia !== 'undefined' && porDia.length > 0) {
+            const maxDia = Math.max(...porDia.map(d => d.total));
+            const diasMap = {};
+            porDia.forEach(d => diasMap[parseInt(d.dia)] = d.total);
+        %>
+          <div class="dias-grid">
+          <% for(let d = 0; d < 7; d++) { %>
+            <% const val = diasMap[d] || 0; %>
+            <% const altura = val > 0 ? Math.max(8, Math.round((val/maxDia)*76)) : 2; %>
+            <div class="dia-col">
+              <div class="dia-barra <%= val === maxDia && val > 0 ? 'pico' : '' %>" style="height:<%= altura %>px"></div>
+              <span class="dia-label"><%= nomesDias[d] %></span>
+            </div>
+          <% } %>
+          </div>
+        <% } else { %>
+          <p style="color:#454955;font-size:13px">Sem dados suficientes.</p>
+        <% } %>
+      </div>
+
+    </div>
+
+    <!-- Top lojas -->
+    <div class="rel-card">
+      <h3>Top 10 Lojas com Mais Ocorrências</h3>
+      <table class="tabela-lojas">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Loja</th>
+            <th>Ocorrências</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% porLoja.forEach((l, i) => { %>
+          <tr>
+            <td><span class="rank <%= i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '' %>"><%= i+1 %></span></td>
+            <td><%= l.nome || 'Sem nome' %></td>
+            <td><strong style="color:#eef0f5"><%= l.total %></strong></td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script src="/relatorios.js"></script>
+</body>
+</html>

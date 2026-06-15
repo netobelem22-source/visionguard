@@ -1,0 +1,142 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpeg" href="/logo.jpg"/>
+<title>Lojas – VisionGuard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css"/>
+<style>
+.lojas-wrap { padding: 0 28px 40px; }
+.form-nova-loja { background:#131720; border:1px solid rgba(255,255,255,0.06); border-radius:14px; padding:20px; margin-bottom:24px; }
+.form-nova-loja h3 { font-family:Rajdhani,sans-serif; font-size:15px; font-weight:700; color:#8b909e; text-transform:uppercase; letter-spacing:.06em; margin-bottom:16px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr auto; gap:10px; align-items:end; }
+.form-group { display:flex; flex-direction:column; gap:6px; }
+.form-group label { font-size:12px; color:#8b909e; text-transform:uppercase; letter-spacing:.05em; }
+.form-group input { padding:9px 12px; border:1px solid rgba(255,255,255,0.06); border-radius:8px; background:#0f1219; color:#eef0f5; font-family:Inter,sans-serif; font-size:13px; outline:none; }
+.form-group input:focus { border-color:#4e7fff; }
+.btn-add { background:#4e7fff; border:none; color:#fff; border-radius:8px; padding:9px 20px; cursor:pointer; font-family:Inter,sans-serif; font-size:13px; font-weight:600; white-space:nowrap; }
+.erro-msg { background:rgba(224,92,92,0.1); border:1px solid rgba(224,92,92,0.3); color:#e05c5c; border-radius:8px; padding:10px 14px; font-size:13px; margin-bottom:16px; }
+table { width:100%; border-collapse:collapse; }
+thead tr { background:#131720; }
+th { padding:12px 16px; text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:#454955; font-weight:600; border-bottom:1px solid rgba(255,255,255,0.06); }
+td { padding:14px 16px; font-size:13px; color:#8b909e; border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:middle; }
+tr:hover td { background:#131720; }
+.nome-cel { color:#eef0f5; font-weight:500; }
+.codigo-cel { font-family:monospace; font-size:13px; color:#4e7fff; background:rgba(78,127,255,0.1); padding:3px 8px; border-radius:4px; }
+.badge-ativo { background:rgba(60,184,168,0.15); color:#3cb8a8; padding:3px 10px; border-radius:10px; font-size:11px; font-weight:600; }
+.badge-inativo { background:rgba(224,92,92,0.15); color:#e05c5c; padding:3px 10px; border-radius:10px; font-size:11px; font-weight:600; }
+.acoes { display:flex; gap:6px; }
+.btn-sm { padding:5px 12px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; font-family:Inter,sans-serif; border:none; }
+.btn-toggle-on { background:rgba(224,92,92,0.15); color:#e05c5c; border:1px solid rgba(224,92,92,0.2); }
+.btn-toggle-off { background:rgba(60,184,168,0.15); color:#3cb8a8; border:1px solid rgba(60,184,168,0.2); }
+.btn-excluir { background:rgba(224,92,92,0.1); color:#e05c5c; border:1px solid rgba(224,92,92,0.15); }
+.total-info { font-size:13px; color:#454955; margin-bottom:16px; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo-wrap">
+      <img src="/logo.jpg" alt="Grupo Koch" class="brand-logo">
+    </div>
+    <span class="brand-label">VisionGuard</span>
+  </div>
+  <nav class="menu">
+    <a href="/" class="menu-btn">Blacklist</a>
+    <a href="/relatorios" class="menu-btn">Relatórios</a>
+    <a href="/perfis" class="menu-btn">Perfis</a>
+    <a href="/admin/usuarios" class="menu-btn">Usuários</a>
+    <a href="/admin/lojas" class="menu-btn ativo">Lojas</a>
+    <a href="/configuracoes" class="menu-btn">Configurações</a>
+  </nav>
+  <a href="/logout" class="logout">↪ &nbsp;Sair</a>
+</aside>
+
+<div class="main-content">
+  <div class="topo">
+    <div class="titulo">Gerenciar Lojas</div>
+    <div class="stats-row">
+      <div class="stat-chip">
+        <div class="val"><%= lojas.length %></div>
+        <div class="lbl">Total de lojas</div>
+      </div>
+      <div class="stat-chip">
+        <div class="val"><%= lojas.filter(l => l.ativo).length %></div>
+        <div class="lbl">Ativas</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lojas-wrap">
+
+    <% if (typeof erro !== 'undefined' && erro) { %>
+      <div class="erro-msg">Código já cadastrado. Use um código diferente.</div>
+    <% } %>
+
+    <!-- Formulário nova loja -->
+    <div class="form-nova-loja">
+      <h3>Adicionar nova loja</h3>
+      <form method="POST" action="/admin/lojas">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome da loja</label>
+            <input type="text" name="nome" placeholder="Ex: Loja 28 - Centro" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Código de acesso</label>
+            <input type="text" name="codigo" placeholder= required autocomplete="off" style="text-transform:uppercase">
+          </div>
+          <button type="submit" class="btn-add">+ Adicionar</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabela de lojas -->
+    <% if (lojas.length === 0) { %>
+      <p style="color:#454955;font-size:13px;text-align:center;padding:40px 0">Nenhuma loja cadastrada ainda.</p>
+    <% } else { %>
+      <p class="total-info"><%= lojas.filter(l => l.ativo).length %> de <%= lojas.length %> lojas ativas</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Código</th>
+            <th>Status</th>
+            <th>Cadastrada em</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% lojas.forEach(loja => { %>
+          <tr>
+            <td class="nome-cel"><%= loja.nome %></td>
+            <td><span class="codigo-cel"><%= loja.codigo %></span></td>
+            <td>
+              <span class="<%= loja.ativo ? 'badge-ativo' : 'badge-inativo' %>">
+                <%= loja.ativo ? 'Ativa' : 'Inativa' %>
+              </span>
+            </td>
+            <td><%= new Date(loja.criado_em).toLocaleDateString('pt-BR') %></td>
+            <td>
+              <div class="acoes">
+                <form method="POST" action="/admin/lojas/<%= loja.id %>/toggle">
+                  <button class="btn-sm <%= loja.ativo ? 'btn-toggle-on' : 'btn-toggle-off' %>">
+                    <%= loja.ativo ? 'Desativar' : 'Ativar' %>
+                  </button>
+                </form>
+                <form method="POST" action="/admin/lojas/<%= loja.id %>/excluir">
+                  <button class="btn-sm btn-excluir">Excluir</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+
+  </div>
+</div>
+</body>
+</html>
