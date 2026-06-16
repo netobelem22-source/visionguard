@@ -1,0 +1,36 @@
+{
+  "name": "visionguard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Painel web VisionGuard - blacklist com reconhecimento facial",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "axios": "^1.7.9",
+    "bcrypt": "^5.1.1",
+    "canvas": "^2.11.2",
+    "compression": "^1.7.5",
+    "connect-sqlite3": "^0.9.15",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-session": "^1.18.1",
+    "face-api.js": "^0.22.2",
+    "form-data": "^4.0.1",
+    "helmet": "^8.0.0",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.16",
+    "pg": "^8.13.1",
+    "sharp": "^0.33.5",
+    "socket.io": "^4.8.1",
+    "sqlite3": "^5.1.7",
+    "winston": "^3.17.0"
+  }
+}

@@ -1,0 +1,55 @@
+FROM node:20-bookworm-slim
+
+# Dependencias de sistema:
+# - build-essential/python3 (compilar sqlite3/bcrypt nativos)
+# - libcairo2-dev e afins (modulo "canvas", usado pelo face-api.js)
+# - python3-pip/venv (servico GFPGAN, spawnado pelo Node)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    python3 \
+    python3-venv \
+    python3-pip \
+    libcairo2-dev \
+    libpango1.0-dev \
+    libjpeg-dev \
+    libgif-dev \
+    librsvg2-dev \
+    pkg-config \
+    libgl1 \
+    libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm install --omit=dev
+# O download do binario pre-compilado do sqlite3 falha silenciosamente em
+# alguns ambientes de build (prebuild-install nao reporta erro); forcar
+# compilacao do zero garante que o modulo nativo exista.
+RUN npm rebuild sqlite3 --build-from-source
+
+# Ambiente Python isolado para o servico GFPGAN
+COPY gfpgan-server/requirements.txt /app/gfpgan-server/requirements.txt
+# basicsr usa setup.py legado: precisa do torch ja instalado e sem isolamento
+# de build, senao o pip busca um torch novo (GPU) e quebra por conflito de CUDA.
+RUN python3 -m venv /opt/gfpgan-venv \
+    && /opt/gfpgan-venv/bin/pip install --no-cache-dir -U pip setuptools wheel \
+    && /opt/gfpgan-venv/bin/pip install --no-cache-dir \
+         --extra-index-url https://download.pytorch.org/whl/cpu \
+         torch==2.0.1 torchvision==0.15.2 "numpy<2" \
+    && /opt/gfpgan-venv/bin/pip install --no-cache-dir --no-build-isolation \
+         -r /app/gfpgan-server/requirements.txt
+
+COPY . .
+
+ENV NODE_ENV=production \
+    PORT=3000 \
+    DATA_DIR=/data \
+    GFPGAN_DIR=/data/gfpgan \
+    GFPGAN_PYTHON=/opt/gfpgan-venv/bin/python3 \
+    GFPGAN_SCRIPT=/app/gfpgan-server/servidor_gfpgan.py \
+    GFPGAN_WEIGHTS_DIR=/weights
+
+EXPOSE 3000
+
+CMD ["node", "server.js"]

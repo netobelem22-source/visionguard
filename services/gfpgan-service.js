@@ -5,9 +5,12 @@ let _resolveGfpganPronto;
 const gfpganPronto = new Promise(r => { _resolveGfpganPronto = r; });
 const _callbacks = [];
 
+const GFPGAN_PYTHON = process.env.GFPGAN_PYTHON || '/var/www/GFPGAN/venv/bin/python3';
+const GFPGAN_SCRIPT = process.env.GFPGAN_SCRIPT || '/var/www/GFPGAN/servidor_gfpgan.py';
+
 const proc = spawn(
-  '/var/www/GFPGAN/venv/bin/python3',
-  ['/var/www/GFPGAN/servidor_gfpgan.py'],
+  GFPGAN_PYTHON,
+  [GFPGAN_SCRIPT],
   { stdio: ['pipe', 'pipe', 'pipe'] }
 );
 

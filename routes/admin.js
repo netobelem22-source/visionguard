@@ -1,9 +1,28 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const router = express.Router();
 const pool = require('../database/postgres');
 const verificarLogin = require('../middleware/auth');
 const verificarAdmin = require('../middleware/admin');
+
+const DATA_DIR = process.env.DATA_DIR || '/var/www/visionguard';
+
+const CONFIG_DEFAULT = {
+  msg_recebimento: '',
+  msg_aprovacao: '',
+  email_alertas: '',
+  alertar_apos: ''
+};
+
+function configPath() {
+  const arquivo = path.join(DATA_DIR, 'config.json');
+  if (!fs.existsSync(arquivo)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+    fs.writeFileSync(arquivo, JSON.stringify(CONFIG_DEFAULT, null, 2));
+  }
+  return arquivo;
+}
 
 router.get('/admin/usuarios', verificarLogin, verificarAdmin, async (req, res) => {
   try {
@@ -43,29 +62,31 @@ router.post('/admin/usuarios/:id/excluir', verificarLogin, verificarAdmin, async
 });
 // CONFIGURAÇÕES - GET
 router.get('/configuracoes', verificarLogin, verificarAdmin, async (req, res) => {
-  const config = JSON.parse(fs.readFileSync('/var/www/visionguard/config.json'));
+  const config = JSON.parse(fs.readFileSync(configPath()));
   res.render('configuracoes', { config, usuario: req.session.usuario });
 });
 
 // CONFIGURAÇÕES - POST
 router.post('/configuracoes', verificarLogin, verificarAdmin, async (req, res) => {
   const { msg_recebimento, msg_aprovacao, email_alertas, alertar_apos } = req.body;
-  const config = JSON.parse(fs.readFileSync('/var/www/visionguard/config.json'));
+  const arquivo = configPath();
+  const config = JSON.parse(fs.readFileSync(arquivo));
   config.msg_recebimento = msg_recebimento;
   config.msg_aprovacao = msg_aprovacao;
   config.email_alertas = email_alertas;
   config.alertar_apos = alertar_apos;
-  fs.writeFileSync('/var/www/visionguard/config.json', JSON.stringify(config, null, 2));
+  fs.writeFileSync(arquivo, JSON.stringify(config, null, 2));
   res.redirect('/configuracoes');
 });
 
 // BACKUP
 router.post('/configuracoes/backup', verificarLogin, verificarAdmin, (req, res) => {
   const data = new Date().toISOString().split('T')[0];
-  const origem = '/var/www/visionguard/blacklist.db';
-  const destino = `/var/www/visionguard/backups/blacklist_${data}.db`;
-  if (!fs.existsSync('/var/www/visionguard/backups')) {
-    fs.mkdirSync('/var/www/visionguard/backups');
+  const origem = path.join(DATA_DIR, 'blacklist.db');
+  const pastaBackups = path.join(DATA_DIR, 'backups');
+  const destino = path.join(pastaBackups, `blacklist_${data}.db`);
+  if (!fs.existsSync(pastaBackups)) {
+    fs.mkdirSync(pastaBackups, { recursive: true });
   }
   fs.copyFileSync(origem, destino);
   res.json({ sucesso: true, arquivo: destino });

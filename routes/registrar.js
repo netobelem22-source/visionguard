@@ -9,6 +9,9 @@ const fila = require('../services/fila-processamento');
 const gfpgan = require('../services/gfpgan-service');
 const rateLimit = require('express-rate-limit');
 
+const DATA_DIR = process.env.DATA_DIR || '/var/www/visionguard';
+const GFPGAN_DIR = process.env.GFPGAN_DIR || '/var/www/GFPGAN';
+
 // ========================================
 // POOL DE FACE PROCESSORS
 // ========================================
@@ -113,7 +116,11 @@ function euclideanDistance(a, b) {
 // ========================================
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, '/var/www/visionguard/inputs/'),
+  destination: (req, file, cb) => {
+    const pasta = path.join(DATA_DIR, 'inputs');
+    fs.mkdirSync(pasta, { recursive: true });
+    cb(null, pasta);
+  },
   filename: (req, file, cb) => cb(null, Date.now() + '.jpg')
 });
 
@@ -210,7 +217,7 @@ router.post('/registrar/status', (req, res) => {
 async function processarFoto(dados) {
   const { caminhoImagem, nome, caminho, lojaId, dataOcorrencia } = dados;
   const timestamp = Date.now();
-  const pastaRestored = `/var/www/GFPGAN/resultados/restored_faces_${timestamp}`;
+  const pastaRestored = path.join(GFPGAN_DIR, 'resultados', `restored_faces_${timestamp}`);
 
   try {
     if (!fs.existsSync(pastaRestored)) fs.mkdirSync(pastaRestored, { recursive: true });

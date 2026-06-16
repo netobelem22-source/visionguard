@@ -23,6 +23,8 @@ const db =
 const verificarLogin =
   require("../middleware/auth");
 
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || "http://127.0.0.1:8000";
+
 
 const storage =
   multer.diskStorage({
@@ -287,7 +289,7 @@ router.post(
       const resposta =
         await axios.post(
 
-          "http://127.0.0.1:8000/detectar",
+          `${AI_SERVICE_URL}/detectar`,
 
           form,
 

@@ -1,9 +1,16 @@
 const sqlite3 =
   require("sqlite3").verbose();
 
+const path = require("path");
+
+const dbPath = path.join(
+  process.env.DATA_DIR || ".",
+  "blacklist.db"
+);
+
 const db =
   new sqlite3.Database(
-    "./blacklist.db",
+    dbPath,
     (err) => {
 
       if (err) {
@@ -43,6 +50,27 @@ db.serialize(() => {
     )
 
   `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS lojas (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nome TEXT,
+      codigo TEXT UNIQUE,
+      ativo INTEGER DEFAULT 1
+    )
+  `);
+
+  const colunasExtras = [
+    "status TEXT",
+    "loja_id INTEGER",
+    "descriptor TEXT",
+    "observacao TEXT",
+    "grupo TEXT"
+  ];
+
+  colunasExtras.forEach((coluna) => {
+    db.run(`ALTER TABLE blacklist ADD COLUMN ${coluna}`, () => {});
+  });
 
 });
 

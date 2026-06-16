@@ -8,6 +8,8 @@ __pycache__/
 *.db
 *.db.backup
 *.json
+!package.json
+!package-lock.json
 blacklist.json
 *.pt
 GFPGAN/

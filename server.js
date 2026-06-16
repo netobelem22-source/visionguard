@@ -87,7 +87,7 @@ app.use(session({
   saveUninitialized: false,
   store: new SQLiteStore({
     db: 'sessions.db',
-    dir: '/var/www/visionguard'
+    dir: process.env.DATA_DIR || '/var/www/visionguard'
   }),
   cookie: {
     expires: false

@@ -1,9 +1,9 @@
 const { Pool } = require('pg');
 const pool = new Pool({
-  user: process.env.DB_USER || 'vgadmin',
+  user: process.env.DB_USER,
   host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'visionguard_users',
-  password: process.env.DB_PASS || 'VisionGuard@2026',
-  port: 5432,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASS,
+  port: parseInt(process.env.DB_PORT) || 5432,
 });
 module.exports = pool;
