@@ -1,0 +1,5 @@
+services:
+  postgres:
+    volumes: !reset
+      - pgdata:/var/lib/postgresql/data
+

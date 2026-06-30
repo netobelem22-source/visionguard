@@ -55,7 +55,7 @@ app.use(
 app.use(
   "/inputs",
   express.static(
-    path.join(__dirname, "inputs")
+    path.join(process.env.DATA_DIR || __dirname, "inputs")
   )
 );
 app.set("io", io);

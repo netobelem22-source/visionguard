@@ -38,9 +38,16 @@ RUN python3 -m venv /opt/gfpgan-venv \
          --extra-index-url https://download.pytorch.org/whl/cpu \
          torch==2.0.1 torchvision==0.15.2 "numpy<2" \
     && /opt/gfpgan-venv/bin/pip install --no-cache-dir --no-build-isolation \
-         -r /app/gfpgan-server/requirements.txt
+         -r /app/gfpgan-server/requirements.txt \
+    && /opt/gfpgan-venv/bin/pip install --no-cache-dir \
+         "numpy==1.26.4" --force-reinstall --no-deps \
+    && /opt/gfpgan-venv/bin/pip uninstall opencv-python -y 2>/dev/null || true \
+    && /opt/gfpgan-venv/bin/pip install --no-cache-dir \
+         "opencv-python-headless==4.8.1.78" --no-deps
 
 COPY . .
+
+RUN mkdir -p /app/inputs
 
 ENV NODE_ENV=production \
     PORT=3000 \
